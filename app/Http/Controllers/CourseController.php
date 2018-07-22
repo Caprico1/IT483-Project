@@ -17,12 +17,12 @@ class CourseController extends Controller
     {
         $courses = Course::with('preRequisites')->get();
 
-        return view('admin/courses/index', compact($courses));
+        return view('admin/courses/index', compact('courses'));
 
 
     }
 
-    /**
+/**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -54,13 +54,13 @@ class CourseController extends Controller
 
         foreach ($request->prerequisites as $prerequisite){
             $new_prerequisite = PreRequisites::create([
-                'course_code' => $prerequisite->course_code
+                'course_code' => $prerequisite
             ]);
 
-            $new_prerequisite->course()->attach($new_prerequisite->id);
+            $new_prerequisite->course()->attach($course->id);
         }
 
-        return redirect()->route('course.show', $course->id);
+        return redirect()->route('course.edit', $course->id);
     }
 
     /**
@@ -84,9 +84,12 @@ class CourseController extends Controller
      */
     public function edit($id)
     {
-        $course = Course::with('preRequisites')->findOrFail($id);
+        $course = Course::findOrFail($id);
 
-        return view('admin/courses/edit', compact($course));
+        $prerequisites = $course->preRequisites()->get();
+
+
+        return view('admin/courses/edit', compact('course', 'prerequisites'));
     }
 
     /**
@@ -110,14 +113,15 @@ class CourseController extends Controller
         $course->code = $request->code;
         $course->description = $request->description;
 
+        $course->save();
         $course->preRequisites()->detach();
 
         foreach ($request->prerequisites as $prerequisite){
             $new_prerequisite = PreRequisites::create([
-                'course_code' => $prerequisite->course_code
+                'course_code' => $prerequisite
             ]);
 
-            $new_prerequisite->course()->attach($new_prerequisite->id);
+            $new_prerequisite->course()->attach($course->id);
         }
 
         return redirect()->back()->with('success', 'Successfully Updated Course');

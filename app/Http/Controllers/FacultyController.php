@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Faculty;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FacultyController extends Controller
 {
@@ -37,6 +38,7 @@ class FacultyController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'firstName' => 'required',
             'lastName' => 'required',
@@ -47,6 +49,9 @@ class FacultyController extends Controller
         ]);
 
 
+        Storage::disk('public')->put('/', $request->file('file'));
+        $path = $request->file('file')->getClientOriginalName();
+
         $faculty = Faculty::create([
             'first_name' => $request->firstName,
             'last_name' =>  $request->lastName,
@@ -54,9 +59,11 @@ class FacultyController extends Controller
             'email' => $request->email,
             'office' => $request->office,
             'phone' => $request->phone,
+            'image_url' => $path
         ]);
 
-        $request->file('file');
+        $faculty->save();
+
     }
 
     /**

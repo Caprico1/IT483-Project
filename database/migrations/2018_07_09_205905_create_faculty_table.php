@@ -22,7 +22,7 @@ class CreateFacultyTable extends Migration
             $table->string('email')->unique();
             $table->string('office');
             $table->string('phone');
-            $table->integer('image_url');
+            $table->string('image_url');
 
             $table->timestamps();
         });
