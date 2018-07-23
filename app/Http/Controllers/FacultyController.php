@@ -43,14 +43,14 @@ class FacultyController extends Controller
             'firstName' => 'required',
             'lastName' => 'required',
             'title' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'office' => 'required',
             'phone' => 'required',
         ]);
 
 
-        Storage::disk('public')->put('/', $request->file('file'));
         $path = $request->file('file')->getClientOriginalName();
+        Storage::disk('public')->putFileAs('/', $request->file('file'), $path);
 
         $faculty = Faculty::create([
             'first_name' => $request->firstName,
@@ -64,6 +64,7 @@ class FacultyController extends Controller
 
         $faculty->save();
 
+        return redirect()->route('faculty.index')->with('success', 'Successfully created Faculty member');
     }
 
     /**
@@ -85,7 +86,9 @@ class FacultyController extends Controller
      */
     public function edit($id)
     {
-        //
+        $faculty = Faculty::findOrFail($id);
+
+        return view('admin.faculty.edit', compact('faculty'));
     }
 
     /**
@@ -97,7 +100,20 @@ class FacultyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $faculty = Faculty::findOrFail($id);
+
+        $faculty->first_name = $request->first_name;
+        $faculty->last_name = $request->last_name;
+        $faculty->title = $request->title;
+        $faculty->email = $request->email;
+        $faculty->office = $request->office;
+        $faculty->phone = $request->phone;
+
+        if ($request->file('file') != null){
+            $new_path = $request->file('file')->getClientOriginalName();
+            Storage::disk('public')->putFileAs('/', $request->file('file'), $new_path);
+            $faculty->image_url = $new_path;
+        }
     }
 
     /**
@@ -108,6 +124,6 @@ class FacultyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Faculty::findOrFail($id)->delete();
     }
 }
