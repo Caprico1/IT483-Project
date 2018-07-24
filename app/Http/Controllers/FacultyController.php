@@ -114,6 +114,8 @@ class FacultyController extends Controller
             Storage::disk('public')->putFileAs('/', $request->file('file'), $new_path);
             $faculty->image_url = $new_path;
         }
+
+        return redirect()->back()->with('success', 'Successfully updated faculty member');
     }
 
     /**

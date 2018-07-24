@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\News;
+use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
-class NewsController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +14,9 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $all_news = News::all();
+        $users = User::all();
 
-        return view('admin.news.index', compact('all_news'));
+        return view('admin.users.index', compact('users'));
     }
 
     /**
@@ -27,7 +26,7 @@ class NewsController extends Controller
      */
     public function create()
     {
-        return view('admin.news.create');
+        return view('admin.users.create');
     }
 
     /**
@@ -38,15 +37,15 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        Storage::disk('public')->putFileAs('/news', $request->file('file'), $request->file('file')->getClientOriginalName());
 
-        $news_item = News::create([
-            'title' => $request->title,
-            'content' => $request->content,
-            'news_image' => $request->file('file')->getClientOriginalName()
+        //THIS IS A DUMB WAY TO DO IT. TIME CONSTRAINTS SUCK!
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
         ]);
 
-        return redirect()->route('news.index')->with('success', 'Successfully Created News Item');
+        return redirect()->route('user.index')->with('success', 'Successfully created User');
     }
 
     /**
@@ -68,9 +67,9 @@ class NewsController extends Controller
      */
     public function edit($id)
     {
-        $news_item = News::findOrFail($id);
+        $user = User::findOrFail($id);
 
-        return view('admin.news.edit', compact('news_item'));
+        return view('admin.user.edit', compact('user'));
     }
 
     /**
@@ -82,17 +81,13 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $news_item = News::findOrFail($id);
+        $user = User::findOrFail($id);
 
-        $news_item->title = $request->title;
-        $news_item->content = $request->content;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
 
-        if ($request->file('file')){
-            $news_item->news_image = $request->file('file')->getClientOriginalName();
-            Storage::disk('public')->putFileAs('/news', $request->file('file'), $request->file('file')->getClientOriginalName());
-        }
-
-        return redirect()->back()->with('success', 'Successfully updated News post');
+        return redirect()->back()->with('success', 'Successfully updated User');
     }
 
     /**
@@ -103,8 +98,8 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        News::findOrFail($id)->delete();
+        User::findOrFail($id)->delete();
 
-        return redirect()->back()->with('success', 'Successfully Deleted News Item');
+        return redirect()->back()->with('success', 'Successfully deleted User');
     }
 }

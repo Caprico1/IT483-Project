@@ -8,13 +8,13 @@
         <div class="col-md-6 offset-3">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>News Index</h1>
+                    <h1>User Index</h1>
                 </div>
 
                 <div class="col-md-6">
-                    <a id="course-create" href="{{route('news.create')}}">
+                    <a id="course-create" href="{{route('user.create')}}">
                         <button class="btn btn-primary">
-                            Create News Article
+                            Create User
                         </button>
                     </a>
                 </div>
@@ -24,16 +24,16 @@
 
                 <tr>
                     <th>Id</th>
-                    <th>Title</th>
-                    <th>Options</th>
+                    <th>name</th>
+                    <th>email</th>
                 </tr>
 
-                @foreach($all_news as $news_item)
+                @foreach($users as $user)
                     <tr>
-                        <td>{{$news_item->id}}</td>
-                        <td>{{$news_item->title}}
+                        <td>{{$user->id}}</td>
+                        <td>{{$user->name}}
                         <td>
-                            <a href="{{route('news.edit', $news_item->id)}}">
+                            <a href="{{route('news.edit', $user->id)}}">
                                 <button class="btn btn-primary">edit</button>
                             </a>
                         </td>
