@@ -31,7 +31,7 @@
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
 
-                    <img src="logo-horz-a-c.png" alt="Minnesota State University Mankato: CIT Department">
+                    <img src="{{asset('logo-horz-a-c.png')}}" alt="Minnesota State University Mankato: CIT Department">
                     {{--Minnesota State University Mankato: CIT Department--}}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -48,12 +48,7 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                            </li>
+
                         @else
                             <li class="nav-item">
                                 <a class="nav-link" href="{{route('course.index')}}">Courses</a>
