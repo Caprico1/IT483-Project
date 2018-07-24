@@ -75,7 +75,9 @@ class FacultyController extends Controller
      */
     public function show($id)
     {
-        //
+        $faculty = Faculty::findOrFail($id);
+
+        return view('admin.faculty.show', compact('faculty'));
     }
 
     /**

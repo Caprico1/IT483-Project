@@ -52,12 +52,14 @@ class CourseController extends Controller
             'description' => $request->description
         ]);
 
-        foreach ($request->prerequisites as $prerequisite){
-            $new_prerequisite = PreRequisites::create([
-                'course_code' => $prerequisite
-            ]);
+        if (count($request->prerequisites)){
+            foreach ($request->prerequisites as $prerequisite){
+                $new_prerequisite = PreRequisites::create([
+                    'course_code' => $prerequisite
+                ]);
 
-            $new_prerequisite->course()->attach($course->id);
+                $new_prerequisite->course()->attach($course->id);
+            }
         }
 
         return redirect()->route('course.edit', $course->id);
@@ -73,7 +75,7 @@ class CourseController extends Controller
     {
         $course = Course::with('preRequisites')->findOrFail($id);
 
-        return view('admin/courses/show', compact($course));
+        return view('admin.courses.show', compact('course'));
     }
 
     /**
@@ -116,12 +118,15 @@ class CourseController extends Controller
         $course->save();
         $course->preRequisites()->detach();
 
-        foreach ($request->prerequisites as $prerequisite){
-            $new_prerequisite = PreRequisites::create([
-                'course_code' => $prerequisite
-            ]);
+        if (count($request->prerequisites)){
 
-            $new_prerequisite->course()->attach($course->id);
+            foreach ($request->prerequisites as $prerequisite){
+                $new_prerequisite = PreRequisites::create([
+                    'course_code' => $prerequisite
+                ]);
+
+                $new_prerequisite->course()->attach($course->id);
+            }
         }
 
         return redirect()->back()->with('success', 'Successfully Updated Course');

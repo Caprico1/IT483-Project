@@ -11,9 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index')->name('welcome');
+
 
 
 Auth::routes();
@@ -22,6 +21,8 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/course/{id}', 'CourseController@show')->name('course.show');
+Route::get('/news/{id}', 'NewsController@show')->name('news.show');
+Route::get('/faculty/{id}', 'FacultyController@show')->name('faculty.show');
 
 //Admin routes
 Route::prefix('admin')->middleware('auth')->group(function (){
